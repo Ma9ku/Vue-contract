@@ -1,26 +1,203 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div id="app">
+    <MyContract
+      header="Договор предоплаты купли-продажи набора кухонной мебели"
+      :contractCase="formattedContractCase"
+      :date="formattedDate"
+      city="г. Алматы"
+      :contractData="contractData"
+      :paragraphItems="[
+        {
+          title: 'Предмет договора',
+          items: [
+            'Продавец обязуется передать в собственность Покупателя набор мебели для кухни (далее «Товар»), а Покупатель обязуется принять Товар и уплатить Продавцу за него денежную сумму, в порядке и размере, предусмотренных Договором.',
+            'Предметом Договора является Товар, заказанный Покупателем и соответствующий описанию, предусмотренного Приложением №1 к Основному Договору;',
+            extraServices,
+            'стоимость Услуг не включается в стоимость Товара. Указанные услуги предоставляются Покупателю только при условии приобретения Товара.',
+          ],
+        },
+        {
+          title: 'Порядок исполнения договора',
+          items: [
+            'Покупатель, ознакомившись с демонстрируемыми образцами, потребительскими свойствами и условиями поставки, заказывает необходимый ему Товар и заключает Договор предоплаты. При этом, стороны в дальнейшем обязуются заключить Основной Договор купли-продажи кухонного набора (далее «Основной Договор»).',
+          ],
+        },
+        {
+          title: 'Порядок расчетов и сумма договора',
+          items: [
+            'Цена Товара и дополнительных услуг определяется в момент заключения Основного Договора:',
+            prepayment,
+            'оставшуюся сумму Покупатель оплачивает в момент заключения Основного Договора.',
+          ],
+        },
+        {
+          title: 'СРОК ДЕЙСТВИЯ ДОГОВОРА',
+          items: [
+            'Договор вступает в силу с момента его подписания.',
+            'Датой окончания договора будет дата передачи Покупателю или лицам, его представляющим, Товара, соответствующего описанию, указанному в Приложениях Основного Договора. При оказании услуг, указанных в Договоре, Договор считается исполненным с момента выполнения этих услуг.',
+          ],
+        },
+        {
+          title: 'ОТВЕТСТВЕННОСТЬ СТОРОН',
+          items: [
+            'Право собственности на Товар переходит к Покупателю в момент 100% оплаты стоимости Товара.',
+            'В случае отказа Покупателем от Товара, после его письменного обращения, Продавец, в течение 14 (четырнадцати) рабочих дней, возвращает сумму, оплаченную Покупателем за Товар, за вычетом фактически понесенных Продавцом расходов.',
+            'Стороны освобождаются от ответственности за частичное или полное неисполнение обязательств по настоящему договору, если это неисполнение явилось следствием обстоятельств непреодолимой силы, возникших после заключения настоящего договора в результате событий чрезвычайного характера, которые сторона не могла предвидеть или предотвратить разумными мерами (форс-мажорные обстоятельства). К таким событиям относятся наводнения, пожар, землетрясения, взрыв, шторм, оседание почвы, эпидемия и иные явления природы, военные действия, технологические катастрофы.',
+          ],
+        },
+        {
+          title: 'РАЗРЕШЕНИЕ СПОРОВ',
+          items: [
+            'Все разногласия и споры, которые могут возникнуть между сторонами из настоящего договора и в связи с ним, будут по возможности решаться путем переговоров.',
+            'В случае, когда возникшие споры путем переговоров не урегулированы, они подлежат разрешению в судах по месту нахождения Продавца.',
+          ],
+        },
+        {
+          title: 'ФОРС-МАЖОРНЫЕ ОБСТОЯТЕЛЬСТВА',
+          items: [
+            'В случае наступления форс-мажорных обстоятельств пострадавшая Сторона обязана в кратчайшие сроки предупредить другую Сторону о невозможности исполнения своих обязательств по настоящему Договору.',
+            'При этом ни одна Сторона не может требовать возмещения каких-либо убытков или потерь, связанных с невыполнением Договора.',
+          ],
+        },
+        {
+          title: 'ПРОЧИЕ УСЛОВИЯ ДОГОВОРА',
+          items: [
+            'Настоящий Договор, а также любые приложения к нему, заключается между двумя Сторонами в двух экземплярах, имеющих равную юридическую силу, и передаются по одному экземпляру каждой из сторон.',
+            'Ни одна из сторон договора не вправе передавать свои права по Договору другому лицу без письменного согласия другой Стороны.',
+          ],
+        },
+      ]"
+    />
+    <ContractInputs
+      v-if="redact"
+      @dataChanged="dataChanged"
+      @dateChanged="dateChanged"
+      @typeSelected="typeSelected"
+      @idGetDateChanged="idGetDateChanged"
+      @onSave="onSave"
+    />
+  </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import MyContract from "./components/MyContract.vue";
+import ContractInputs from "./components/ContractInputs.vue";
 
 export default {
   name: "App",
   components: {
-    HelloWorld,
+    MyContract,
+    ContractInputs,
+  },
+  data() {
+    return {
+      contractData: {
+        day: "",
+        month: "",
+        data_1: "",
+        data_2: "",
+        type: "Физическое лицо",
+        fio: "",
+        idNum: "",
+        iin: "",
+        idGetOrg: "",
+        idGetDate: "",
+        ulName: "",
+        directorName: "",
+        address: "",
+        registred: "",
+        bin: "",
+        phone: "",
+        postAddress: "",
+        bik: "",
+      },
+      redact: true,
+    };
+  },
+  computed: {
+    formattedDate() {
+      return `«${this.contractData.day}» ${this.contractData.month} 2023 г.`;
+    },
+    extraServices() {
+      return `Покупателю могут быть предоставлены дополнительные услуги ${this.contractData.data_1}:`;
+    },
+    prepayment() {
+      return `в момент заключения Договора предоплаты Покупатель вносит предоплату на счет Продавца в размере ${this.contractData.data_2} тенге;`;
+    },
+    formattedContractCase() {
+      console.log(this.contractData.fio);
+
+      if (this.contractData.type === "Физическое лицо")
+        return `<strong>ТОО «Test»</strong> в лице директора Иванов Иван, 
+          действующего на основании Устава, именуемое в дальнейшем «Продавец», 
+          с одной стороны, и гр. ${this.contractData.fio} уд.личности: № ${this.contractData.idNum}, 
+          выданный ${this.contractData.idGetOrg}, проживающий по адресу: ${this.contractData.address}, 
+          именуемый в дальнейшем «Покупатель», с другой стороны, заключили настоящий 
+          Договор предоплаты о нижеследующем:`;
+      else
+        return `Название компании ${this.contractData.ulName}, 
+          в лице директора ${this.contractData.directorName}, действующего на основании 
+          Устава, расположенный по адресу ${this.contractData.address},`;
+    },
+  },
+  methods: {
+    dataChanged({ name, value }) {
+      console.log(name, value);
+      this.contractData[name] = value;
+    },
+    dateChanged({ date }) {
+      console.log(date);
+      this.contractData.day = date.substring(8);
+      this.contractData.month = [
+        "",
+        "январь",
+        "февраль",
+        "март",
+        "апрель",
+        "май",
+        "июнь",
+        "июль",
+        "август",
+        "сентябрь",
+        "октябрь",
+        "ноябрь",
+        "декабрь",
+      ][parseInt(date.substring(5, 7))];
+    },
+    idGetDateChanged({ date }) {
+      // console.log(date);
+      // this.contractData.idGetDate = date.substring(8);
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear();
+
+      const formattedDate = `${day}.${month}.${year}`;
+      this.contractData.idGetDate = formattedDate;
+      // console.log(formattedDate);
+    },
+    typeSelected({ selectedOption }) {
+      console.log(selectedOption);
+      this.contractData.type = selectedOption;
+    },
+    onSave() {
+      this.redact = false;
+    },
   },
 };
 </script>
 
-<style>
+<style scoped>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  margin: 0;
+  padding: 0;
+
+  width: 100vw;
+  /* height: 100vh; */
+  box-sizing: border-box;
+  border: 1px solid red;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 </style>
